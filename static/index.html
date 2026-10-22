@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Owl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff8ee; --card: #ffffff; --ink: #2b2a33; --muted: #77707f;
+    --owl: #1f6f78; --owl-soft: #e3f2f1; --sun: #f59e2b; --sun-soft: #fff0d9;
+    --kid: #6c5ce7; --kid-soft: #efedff; --warn: #c2410c; --line: #eadfce;
+    --radius: 22px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 18px/1.5 "Nunito", system-ui, sans-serif;
+    display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border-bottom: 2px solid var(--line); background: var(--bg);
+  }
+  .logo { font: 700 30px/1 "Baloo 2", system-ui; color: var(--owl); display: flex; align-items: center; gap: 8px; }
+  .logo .owl { font-size: 34px; display: inline-block; }
+  .owl.talking { animation: bob .6s ease-in-out infinite alternate; }
+  @keyframes bob { from { transform: translateY(0) rotate(-4deg); } to { transform: translateY(-4px) rotate(4deg); } }
+  header .spacer { flex: 1; }
+  .pill-btn {
+    border: 2px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 8px 14px; font: 600 15px "Nunito", system-ui; cursor: pointer;
+  }
+  .pill-btn:hover { border-color: var(--owl); }
+  select.pill-btn { appearance: none; padding-right: 14px; }
+
+  main { flex: 1; overflow-y: auto; padding: 20px; }
+  .chat { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .hello { text-align: center; padding: 30px 10px 10px; }
+  .hello .big-owl { font-size: 84px; line-height: 1; }
+  .hello h1 { font: 700 34px/1.2 "Baloo 2", system-ui; margin: 10px 0 6px; color: var(--owl); }
+  .hello p { color: var(--muted); margin: 0 0 18px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .chip {
+    background: var(--sun-soft); border: 2px solid #f8d9a8; color: #7a4a0c;
+    border-radius: 999px; padding: 10px 16px; font: 700 16px "Nunito", system-ui; cursor: pointer;
+  }
+  .chip:hover { background: #ffe6bf; }
+
+  .bubble { max-width: 85%; padding: 14px 18px; border-radius: var(--radius); font-size: 20px; }
+  .kid { align-self: flex-end; background: var(--kid-soft); color: #2e2470; border-bottom-right-radius: 6px; }
+  .kid img { display: block; max-width: 220px; border-radius: 14px; margin-bottom: 8px; }
+  .owl-row { display: flex; gap: 10px; align-items: flex-start; }
+  .owl-row .face { font-size: 36px; line-height: 1; margin-top: 4px; }
+  .owlb { background: var(--card); border: 2px solid var(--owl-soft); border-bottom-left-radius: 6px; }
+  .owlb .follow {
+    margin-top: 12px; padding: 10px 14px; border-radius: 16px;
+    background: var(--sun-soft); color: #6b3f06; font-weight: 700;
+  }
+  .owlb .follow::before { content: "🤔 "; }
+  .owlb .tools { margin-top: 8px; display: flex; gap: 8px; }
+  .owlb .tools button { border: 0; background: var(--owl-soft); color: var(--owl); border-radius: 999px; padding: 6px 12px; font: 700 14px "Nunito", system-ui, sans-serif; cursor: pointer; }
+  .thinking { color: var(--muted); font-style: italic; }
+  .thinking .dots::after { content: ""; animation: dots 1.2s steps(4) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+  .err { color: var(--warn); font-size: 16px; }
+
+  footer { border-top: 2px solid var(--line); background: var(--bg); padding: 14px 20px 18px; }
+  .composer { max-width: 760px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+  .mic {
+    flex: none; width: 74px; height: 74px; border-radius: 50%; border: 0; cursor: pointer;
+    background: var(--owl); color: #fff; font-size: 32px; box-shadow: 0 6px 0 #154e55;
+    transition: transform .08s;
+  }
+  .mic:active { transform: translateY(3px); box-shadow: 0 3px 0 #154e55; }
+  .mic.listening { background: #e11d48; box-shadow: 0 6px 0 #9f1239; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { transform: scale(1.06); } }
+  .cam { flex: none; width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--line); background: var(--card); font-size: 24px; cursor: pointer; }
+  .typebox { flex: 1; display: flex; gap: 8px; background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 6px 6px 6px 18px; }
+  .typebox input { flex: 1; border: 0; outline: 0; font: 600 18px "Nunito", system-ui; background: transparent; color: var(--ink); min-width: 0; }
+  .typebox button { border: 0; border-radius: 999px; background: var(--sun); color: #fff; font: 700 16px "Nunito", system-ui, sans-serif; padding: 10px 18px; cursor: pointer; }
+  .attached { max-width: 760px; margin: 0 auto 10px; display: none; align-items: center; gap: 10px; color: var(--muted); font-size: 15px; }
+  .attached img { height: 54px; border-radius: 10px; }
+  .attached button { border: 0; background: none; color: var(--warn); font-weight: 700; cursor: pointer; }
+  .hint { max-width: 760px; margin: 8px auto 0; color: var(--muted); font-size: 14px; text-align: center; min-height: 20px; }
+
+  dialog { border: 0; border-radius: 24px; padding: 0; width: min(680px, 94vw); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+  dialog::backdrop { background: rgba(30, 25, 40, .45); }
+  .dlg { padding: 22px 24px; }
+  .dlg h2 { font: 700 26px "Baloo 2", system-ui; margin: 0 0 4px; color: var(--owl); }
+  .dlg .sub { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+  .dlg .row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+  .primary { border: 0; border-radius: 999px; background: var(--owl); color: #fff; font: 700 16px "Nunito", system-ui, sans-serif; padding: 10px 18px; cursor: pointer; }
+  .qlist { list-style: none; padding: 0; margin: 0; max-height: 220px; overflow: auto; border: 2px solid var(--line); border-radius: 16px; }
+  .qlist li { padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 16px; }
+  .qlist li:last-child { border-bottom: 0; }
+  .qlist .flag { color: var(--warn); font-weight: 700; font-size: 13px; margin-left: 6px; }
+  .digest { margin-top: 16px; font-size: 16px; }
+  .digest h3 { font: 700 18px "Baloo 2", system-ui, sans-serif; margin: 14px 0 4px; }
+  .digest .note { background: #fff1e8; border-left: 4px solid var(--warn); padding: 10px 12px; border-radius: 8px; }
+  video, canvas { width: 100%; border-radius: 16px; background: #000; }
+  label.field { display: block; font-weight: 700; margin: 12px 0 4px; font-size: 15px; }
+  label.field input, label.field select { width: 100%; font: 600 17px "Nunito", system-ui, sans-serif; padding: 10px 12px; border: 2px solid var(--line); border-radius: 12px; }
+  .toggle { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-weight: 700; font-size: 15px; }
+
+  @media (max-width: 560px) {
+    header { padding: 10px 16px; } main { padding: 16px; } footer { padding: 12px 16px; }
+    .mic { width: 62px; height: 62px; } .bubble { font-size: 18px; max-width: 92%; }
+    .typebox button { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><span class="owl" id="logoOwl">🦉</span> Why Owl</div>
+  <div class="spacer"></div>
+  <button class="pill-btn" id="settingsBtn" aria-label="Settings">⚙️ Settings</button>
+  <button class="pill-btn" id="parentBtn">👪 Parent corner</button>
+</header>
+
+<main id="scroller">
+  <div class="chat" id="chat">
+    <div class="hello" id="hello">
+      <div class="big-owl">🦉</div>
+      <h1 id="greeting">What are you wondering about?</h1>
+      <p>Tap the big button and ask me any "why" question. You can show me things too!</p>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="attached" id="attached"><img id="attachedImg" alt="Attached snapshot"><span>Picture ready! Now ask your question.</span><button id="removeImg">Remove</button></div>
+  <div class="composer">
+    <button class="mic" id="micBtn" aria-label="Ask out loud">🎤</button>
+    <button class="cam" id="camBtn" aria-label="Show me with the camera">📷</button>
+    <form class="typebox" id="typeForm">
+      <input id="textIn" placeholder="…or type a question" autocomplete="off">
+      <button type="submit">Ask</button>
+    </form>
+  </div>
+  <div class="hint" id="hint"></div>
+</footer>
+
+<dialog id="parentDlg">
+  <div class="dlg">
+    <h2>👪 Parent corner</h2>
+    <p class="sub">Today's questions. Nothing is saved: closing the page clears this list.</p>
+    <ul class="qlist" id="qlist"></ul>
+    <div class="digest" id="digest"></div>
+    <div class="row">
+      <button class="pill-btn" data-close>Close</button>
+      <button class="primary" id="digestBtn">✨ Make my parent summary</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="camDlg">
+  <div class="dlg">
+    <h2>📷 Show me!</h2>
+    <p class="sub">Hold the thing up to the camera, then press Snap.</p>
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas" hidden></canvas>
+    <div class="row">
+      <button class="pill-btn" data-close>Cancel</button>
+      <button class="primary" id="snapBtn">📸 Snap</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="settingsDlg">
+  <div class="dlg">
+    <h2>⚙️ Settings (for grown-ups)</h2>
+    <p class="sub">The name is only shown on screen. It is never sent to the AI.</p>
+    <label class="field">Child's first name (optional)<input id="nameIn" maxlength="20"></label>
+    <label class="field">Age
+      <select id="ageIn">
+        <option value="3-5">3–5 years</option>
+        <option value="6-8" selected>6–8 years</option>
+        <option value="9-12">9–12 years</option>
+      </select>
+    </label>
+    <label class="toggle"><input type="checkbox" id="voiceIn" checked> Read answers out loud</label>
+    <div class="row"><button class="primary" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const STARTERS = ["Why is the sky blue?", "Why do cats purr?", "Why do we have to sleep?", "Why is the ocean salty?", "Why do leaves change color?"];
+
+// ---------- settings (per-browser convenience only) ----------
+const settings = { name: "", age: "6-8", voice: true };
+try { Object.assign(settings, JSON.parse(localStorage.getItem("whyowl.settings") || "{}")); } catch (e) {}
+function saveSettings() { try { localStorage.setItem("whyowl.settings", JSON.stringify(settings)); } catch (e) {} }
+function applySettings() {
+  $("nameIn").value = settings.name; $("ageIn").value = settings.age; $("voiceIn").checked = settings.voice;
+  $("greeting").textContent = settings.name ? `Hi ${settings.name}! What are you wondering about?` : "What are you wondering about?";
+}
+$("nameIn").oninput = (e) => { settings.name = e.target.value.trim(); saveSettings(); applySettings(); };
+$("ageIn").onchange = (e) => { settings.age = e.target.value; saveSettings(); };
+$("voiceIn").onchange = (e) => { settings.voice = e.target.checked; saveSettings(); if (!settings.voice) speechSynthesis.cancel(); };
+applySettings();
+
+// ---------- state (memory only) ----------
+const turns = [];     // turns sent back to the model for follow-ups
+const log = [];       // what the parent corner shows
+let pendingImage = null;
+let busy = false;
+
+// ---------- chat rendering ----------
+for (const q of STARTERS) {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = q; b.onclick = () => ask(q);
+  $("chips").appendChild(b);
+}
+function scrollDown() { const s = $("scroller"); s.scrollTop = s.scrollHeight; }
+function addKid(text, imgUrl) {
+  $("hello").style.display = "none";
+  const div = document.createElement("div");
+  div.className = "bubble kid";
+  if (imgUrl) { const img = new Image(); img.src = imgUrl; img.alt = "Snapshot"; div.appendChild(img); }
+  if (text) div.appendChild(document.createTextNode(text));
+  $("chat").appendChild(div); scrollDown();
+}
+function addOwl() {
+  const row = document.createElement("div");
+  row.className = "owl-row";
+  row.innerHTML = '<div class="face">🦉</div><div class="bubble owlb"><span class="thinking">Hmm, let me think<span class="dots"></span></span></div>';
+  $("chat").appendChild(row); scrollDown();
+  return row.querySelector(".owlb");
+}
+function fillOwl(el, data) {
+  el.innerHTML = "";
+  const p = document.createElement("div"); p.textContent = data.answer; el.appendChild(p);
+  if (data.follow_up) { const f = document.createElement("div"); f.className = "follow"; f.textContent = data.follow_up; el.appendChild(f); }
+  const tools = document.createElement("div"); tools.className = "tools";
+  const again = document.createElement("button"); again.textContent = "🔊 Say it again";
+  again.onclick = () => speak(`${data.answer} ${data.follow_up || ""}`, true);
+  tools.appendChild(again); el.appendChild(tools); scrollDown();
+}
+
+// ---------- talking ----------
+let voice = null;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith("en"));
+  voice = vs.find(v => /Samantha|Google US English|Karen|Moira/i.test(v.name)) || vs[0] || null;
+}
+if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text, force = false) {
+  if (!("speechSynthesis" in window) || (!settings.voice && !force)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  if (voice) u.voice = voice;
+  u.rate = 0.95; u.pitch = 1.1;
+  u.onstart = () => $("logoOwl").classList.add("talking");
+  u.onend = u.onerror = () => $("logoOwl").classList.remove("talking");
+  speechSynthesis.speak(u);
+}
+
+// ---------- asking ----------
+async function ask(question) {
+  question = (question || "").trim();
+  if (busy || (!question && !pendingImage)) return;
+  busy = true;
+  const image = pendingImage; clearImage();
+  addKid(question || "What is this?", image && image.url);
+  const el = addOwl();
+  try {
+    const res = await fetch("/api/ask", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, age: settings.age, history: turns.slice(-8),
+                             image: image ? { data: image.b64, mime: "image/jpeg" } : null }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || res.statusText);
+    fillOwl(el, data);
+    turns.push({ role: "user", text: question || "What is this, and why is it like that?" });
+    turns.push({ role: "model", text: JSON.stringify(data) });
+    log.push({ q: question || "(showed a picture)", a: data.answer, sensitive: data.sensitive, at: new Date() });
+    speak(`${data.answer} ${data.follow_up || ""}`);
+  } catch (err) {
+    el.innerHTML = '<span class="err">Oops, my feathers got tangled. Try asking again!</span>';
+    console.error(err); $("hint").textContent = `Error: ${err.message}`;
+  } finally { busy = false; }
+}
+$("typeForm").onsubmit = (e) => { e.preventDefault(); const q = $("textIn").value; $("textIn").value = ""; ask(q); };
+
+// ---------- microphone ----------
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+if (!SR) {
+  $("micBtn").disabled = true; $("micBtn").style.opacity = .4;
+  $("hint").textContent = "Voice questions need Chrome or Safari. You can still type.";
+} else {
+  rec = new SR(); rec.lang = "en-US"; rec.interimResults = true; rec.maxAlternatives = 1;
+  rec.onresult = (e) => {
+    const r = e.results[e.results.length - 1];
+    $("textIn").value = r[0].transcript;
+    if (r.isFinal) { const q = r[0].transcript; $("textIn").value = ""; ask(q); }
+  };
+  rec.onerror = (e) => { $("hint").textContent = e.error === "not-allowed" ? "Please allow the microphone to ask out loud." : `Mic: ${e.error}`; };
+  rec.onend = () => { listening = false; $("micBtn").classList.remove("listening"); $("micBtn").textContent = "🎤"; };
+  $("micBtn").onclick = () => {
+    if (listening) { rec.stop(); return; }
+    speechSynthesis.cancel(); $("hint").textContent = "I'm listening…";
+    try { rec.start(); listening = true; $("micBtn").classList.add("listening"); $("micBtn").textContent = "👂"; }
+    catch (e) { $("hint").textContent = "Mic is busy, try again."; }
+  };
+}
+
+// ---------- camera ----------
+let stream = null;
+$("camBtn").onclick = async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    $("video").srcObject = stream; $("camDlg").showModal();
+  } catch (e) { $("hint").textContent = "Please allow the camera to show me things."; }
+};
+function stopCam() { if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } }
+$("camDlg").addEventListener("close", stopCam);
+$("snapBtn").onclick = () => {
+  const v = $("video"), c = $("canvas");
+  const scale = Math.min(1, 768 / Math.max(v.videoWidth, v.videoHeight));
+  c.width = v.videoWidth * scale; c.height = v.videoHeight * scale;
+  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+  const url = c.toDataURL("image/jpeg", 0.85);
+  pendingImage = { url, b64: url.split(",")[1] };
+  $("attachedImg").src = url; $("attached").style.display = "flex";
+  $("camDlg").close(); $("hint").textContent = "Now ask your question about the picture!";
+};
+function clearImage() { pendingImage = null; $("attached").style.display = "none"; }
+$("removeImg").onclick = clearImage;
+
+// ---------- dialogs ----------
+document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest("dialog").close());
+$("settingsBtn").onclick = () => $("settingsDlg").showModal();
+$("parentBtn").onclick = () => {
+  const ul = $("qlist"); ul.innerHTML = "";
+  if (!log.length) { ul.innerHTML = "<li>No questions yet today.</li>"; }
+  for (const item of log) {
+    const li = document.createElement("li");
+    li.textContent = `${item.at.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · ${item.q}`;
+    if (item.sensitive) { const s = document.createElement("span"); s.className = "flag"; s.textContent = `⚠ ${item.sensitive}`; li.appendChild(s); }
+    ul.appendChild(li);
+  }
+  $("digestBtn").disabled = !log.length;
+  $("parentDlg").showModal();
+};
+$("digestBtn").onclick = async () => {
+  const box = $("digest"); box.innerHTML = '<p class="thinking">Writing your summary<span class="dots"></span></p>';
+  try {
+    const res = await fetch("/api/digest", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ age: settings.age, items: log.map(({ q, a, sensitive }) => ({ q, a, sensitive })) }),
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || res.statusText);
+    box.innerHTML = "";
+    const add = (tag, text, cls) => { const el = document.createElement(tag); el.textContent = text; if (cls) el.className = cls; box.appendChild(el); return el; };
+    add("p", d.summary);
+    if (d.starters && d.starters.length) {
+      add("h3", "🍝 Dinner-table conversation starters");
+      const ol = document.createElement("ol"); d.starters.forEach(s => { const li = document.createElement("li"); li.textContent = s; ol.appendChild(li); }); box.appendChild(ol);
+    }
+    if (d.activity) { add("h3", "🧪 Try this at home"); add("p", d.activity); }
+    if (d.sensitive_note) { add("h3", "💬 Worth a chat"); add("p", d.sensitive_note, "note"); }
+  } catch (err) { box.innerHTML = `<p class="err">Couldn't make the summary: ${err.message}</p>`; }
+};
+</script>
+</body>
+</html>
